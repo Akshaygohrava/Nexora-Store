@@ -109,7 +109,7 @@ function ResponsiveAppBar() {
               variant="h6"
               noWrap
               component="a"
-              href="#"
+              href="https://akshaygohrava.netlify.app"
               sx={{
                 mr: 2,
                 display: { xs: 'flex', md: 'flex' },
