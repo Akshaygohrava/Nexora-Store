@@ -1,5 +1,14 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+AN NEXORA STORE
+
+NEXTJS + MATERIAL UI 
+
+Live Preview Here :- https://nexora-store--delta.vercel.app/
+
+
+
+
 ## Getting Started
 
 First, run the development server:
