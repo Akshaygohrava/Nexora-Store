@@ -22,7 +22,9 @@ This project brings together the latest web technologies for a beautiful, secure
 
 See Nexora Store in action:
 
-**nexora-store--delta.vercel.app**
+
+## 🚀 [Live Preview](https://nexora-store--delta.vercel.app/)
+
 
 *💡 Copy and paste the above URL into your browser to visit the live store!*
 
