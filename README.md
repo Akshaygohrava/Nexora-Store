@@ -25,9 +25,6 @@ See Nexora Store in action:
 
 ## 🚀 [Live Preview](https://nexora-store--delta.vercel.app/)
 
-
-*💡 Copy and paste the above URL into your browser to visit the live store!*
-
 ---
 
 ## 🚀 Getting Started
