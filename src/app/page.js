@@ -1,20 +1,17 @@
 import Image from "next/image";
+import Link from "next/link";
+
 
 export default function Home() {
   return (
     <>
-    <div className="m-10">
-       <h1 style={{
-        fontFamily: "cursive",
-        color: "red"
-       }} className="text-center text-3xl">Hello, Welcome To My Nexora-Store</h1>
+    <div className="m-5">
       <nav>
-        <ul>
-          <li></li>
-        </ul>
+         <h1 className="text-center text-3xl md:float-left">Nexora-Store</h1>
+
       </nav>
-
-
+        
+       
     </div>
     </>
   );
