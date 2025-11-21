@@ -1,10 +1,10 @@
 import Link from "next/link";
 
 
-export default function Home() {
-  return (
-    <>
-    <div className="m-5">
+export default function Service() {
+    return (
+        <div>
+            <div className="m-5">
       <nav>
          <h1 className="text-center text-3xl md:float-left">Nexora-Store</h1>
         <nav className="float-right space-x-7">
@@ -15,6 +15,7 @@ export default function Home() {
         
        
     </div>
-    </>
-  );
+            <h1>Hello, World!</h1>
+        </div>
+    );
 }
