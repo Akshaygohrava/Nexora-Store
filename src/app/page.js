@@ -1,3 +1,5 @@
+'use client';
+
 import Navbar from "@/components/Navbar";
 import ProductCarousel from "@/components/ProductCarousel";
 import ProductCard from "@/components/ProductCard";

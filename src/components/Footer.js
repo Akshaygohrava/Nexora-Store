@@ -6,7 +6,7 @@ export default function Footer() {
   const socialLinks = [
     {
       name: 'LinkedIn',
-      href: 'https://linkedin.com',
+      href: 'https://www.linkedin.com/in/akshaygohrava/',
       color: '#0077b5',
       icon: (
         <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -16,7 +16,7 @@ export default function Footer() {
     },
     {
       name: 'GitHub',
-      href: 'https://github.com',
+      href: 'https://github.com/Akshaygohrava',
       color: '#181717',
       icon: (
         <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -26,7 +26,7 @@ export default function Footer() {
     },
     {
       name: 'Instagram',
-      href: 'https://instagram.com',
+      href: 'https://instagram.com/akshaygohrava',
       color: '#E4405F',
       icon: (
         <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -36,7 +36,7 @@ export default function Footer() {
     },
     {
       name: 'Twitter',
-      href: 'https://twitter.com',
+      href: 'https://x.com/Akshay24793929',
       color: '#1DA1F2',
       icon: (
         <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
