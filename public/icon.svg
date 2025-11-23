@@ -1,0 +1,28 @@
+<svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="iconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Rounded square background with gradient -->
+  <rect width="192" height="192" rx="40" fill="url(#iconGrad)"/>
+  
+  <!-- Shopping Bag Body -->
+  <path d="M60 72L48 156H144L132 72H60Z" fill="white" opacity="0.95"/>
+  
+  <!-- Shopping Bag Top/Opening -->
+  <path d="M72 60C72 53.3726 77.3726 48 84 48H108C114.627 48 120 53.3726 120 60V72H72V60Z" fill="white" opacity="0.95"/>
+  
+  <!-- Shopping Bag Handle Detail -->
+  <path d="M84 60C84 58.8954 84.8954 58 86 58H106C107.105 58 108 58.8954 108 60V66H84V60Z" fill="#4F46E5" opacity="0.2"/>
+  
+  <!-- Decorative sparkles -->
+  <circle cx="120" cy="36" r="9" fill="#FCD34D"/>
+  <circle cx="144" cy="48" r="6" fill="#FCD34D"/>
+  <circle cx="36" cy="48" r="6" fill="#FCD34D"/>
+  <circle cx="156" cy="72" r="4.5" fill="#FCD34D"/>
+  <circle cx="36" cy="72" r="4.5" fill="#FCD34D"/>
+</svg>
+
