@@ -85,10 +85,12 @@ export default function Home() {
     },
     {
       id: 7,
-      name: "Webcam HD",
-      price: 59.99,
-      image: "https://images.unsplash.com/photo-1587825147138-346c006b1e98?w=400&h=400&fit=crop",
-      rating: 4.5
+      name: "Smart Fitness Band",
+      price: 72.99,
+      originalPrice: 99.99,
+      image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=500&q=80",
+      rating: 4.7,
+      badge: "Trending"
     },
     {
       id: 8,

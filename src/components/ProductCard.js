@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useCart } from '@/context/CartContext';
 import { useState } from 'react';
 
@@ -20,10 +21,13 @@ export default function ProductCard({ product }) {
     <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden group">
       <Link href={`/products/${product.id || '#'}`}>
         <div className="relative aspect-square bg-gray-200 overflow-hidden">
-          <div
-            className="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-500"
-            style={{ backgroundImage: `url(${product.image})` }}
-          ></div>
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+          />
           {product.badge && (
             <span className="absolute top-2 left-2 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
               {product.badge}
