@@ -260,7 +260,8 @@ export default function Navbar() {
                     key={item.href}
                     href={item.href}
                     className="flex items-center px-5 py-4 text-lg font-bold text-gray-800 hover:text-white bg-white hover:bg-linear-to-r hover:from-indigo-600 hover:to-indigo-700 rounded-xl transition-all duration-300 ease-in-out transform hover:translate-x-2 hover:shadow-lg active:scale-95"
-                    onClick={() => {
+                    onClick={(e) => {
+                      // Close menu and reset search immediately
                       setIsMenuOpen(false);
                       setSearchTerm('');
                     }}
