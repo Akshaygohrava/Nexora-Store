@@ -6,10 +6,13 @@ import ProductCard from "@/components/ProductCard";
 import { products } from "@/data/products";
 import { categories } from "@/data/categories";
 
+const ITEMS_PER_PAGE = 8;
+
 export default function Products() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState('featured');
   const [searchTerm, setSearchTerm] = useState('');
+  const [displayCount, setDisplayCount] = useState(ITEMS_PER_PAGE);
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {
@@ -54,6 +57,13 @@ export default function Products() {
 
     return result;
   }, [selectedCategory, sortBy, searchTerm]);
+
+  // Get displayed products
+  const displayedProducts = useMemo(() => {
+    return filteredProducts.slice(0, displayCount);
+  }, [filteredProducts, displayCount]);
+
+  const hasMoreProducts = displayCount < filteredProducts.length;
 
   return (
     <>
@@ -146,13 +156,47 @@ export default function Products() {
               {filteredProducts.length > 0 ? (
                 <>
                   <div className="mb-4 text-sm text-gray-600">
-                    Showing {filteredProducts.length} products
+                    Showing {displayedProducts.length} of {filteredProducts.length} products
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                    {filteredProducts.map((product) => (
+                    {displayedProducts.map((product) => (
                       <ProductCard key={product.id} product={product} />
                     ))}
                   </div>
+
+                  {/* Load More Button */}
+                  {hasMoreProducts && (
+                    <div className="mt-8 sm:mt-12 flex justify-center">
+                      <button
+                        onClick={() => setDisplayCount(prev => prev + ITEMS_PER_PAGE)}
+                        className="group relative inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 font-semibold text-base sm:text-lg text-white bg-linear-to-r from-indigo-600 to-indigo-700 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+                      >
+                        {/* Animated background */}
+                        <div className="absolute inset-0 bg-linear-to-r from-indigo-700 to-indigo-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        
+                        {/* Button content */}
+                        <span className="relative flex items-center gap-2">
+                          Load More Products
+                          <svg 
+                            className="w-5 h-5 sm:w-6 sm:h-6 transition-transform duration-300 group-hover:translate-y-0.5" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                          >
+                            <path 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round" 
+                              strokeWidth={2} 
+                              d="M19 14l-7 7m0 0l-7-7m7 7V3" 
+                            />
+                          </svg>
+                        </span>
+
+                        {/* Shine effect */}
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-20 group-hover:animate-pulse bg-white"></div>
+                      </button>
+                    </div>
+                  )}
                 </>
               ) : (
                 <div className="bg-white rounded-lg shadow-md p-8 text-center">
@@ -179,6 +223,7 @@ export default function Products() {
                     onClick={() => {
                       setSelectedCategory('All');
                       setSearchTerm('');
+                      setDisplayCount(ITEMS_PER_PAGE);
                     }}
                     className="inline-block bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
                   >
