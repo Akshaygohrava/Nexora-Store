@@ -8,13 +8,28 @@ import ProductCard from "@/components/ProductCard";
 import { categories } from "@/data/categories";
 import { products } from "@/data/products";
 
+const ITEMS_PER_PAGE = 8;
+
 export default function Categories() {
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [displayCount, setDisplayCount] = useState(ITEMS_PER_PAGE);
 
   const categoryProducts = useMemo(() => {
     if (!selectedCategory) return null;
     return products.filter(p => p.category === selectedCategory);
   }, [selectedCategory]);
+
+  const displayedProducts = useMemo(() => {
+    if (!categoryProducts) return null;
+    return categoryProducts.slice(0, displayCount);
+  }, [categoryProducts, displayCount]);
+
+  const hasMoreProducts = categoryProducts && displayCount < categoryProducts.length;
+
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category);
+    setDisplayCount(ITEMS_PER_PAGE);
+  };
 
   return (
     <>
@@ -43,7 +58,7 @@ export default function Categories() {
                   return (
                     <button
                       key={category.id}
-                      onClick={() => setSelectedCategory(category.name)}
+                      onClick={() => handleCategorySelect(category.name)}
                       className="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105"
                     >
                       <div className="aspect-4/3 relative">
@@ -92,11 +107,47 @@ export default function Categories() {
 
               {/* Category Products Grid */}
               {categoryProducts.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-                  {categoryProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </div>
+                <>
+                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                    {displayedProducts.map((product) => (
+                      <ProductCard key={product.id} product={product} />
+                    ))}
+                  </div>
+
+                  {/* Load More Button */}
+                  {hasMoreProducts && (
+                    <div className="mt-8 sm:mt-10 flex justify-center">
+                      <button
+                        onClick={() => setDisplayCount(prev => prev + ITEMS_PER_PAGE)}
+                        className="group relative inline-flex items-center justify-center px-5 sm:px-6 py-2.5 sm:py-3 font-semibold text-sm sm:text-base text-white bg-linear-to-r from-indigo-600 to-indigo-700 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110"
+                      >
+                        {/* Animated background */}
+                        <div className="absolute inset-0 bg-linear-to-r from-indigo-700 to-indigo-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        
+                        {/* Button content */}
+                        <span className="relative flex items-center gap-1.5">
+                          Load More
+                          <svg 
+                            className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300 group-hover:translate-y-0.5" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                          >
+                            <path 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round" 
+                              strokeWidth={2} 
+                              d="M19 14l-7 7m0 0l-7-7m7 7V3" 
+                            />
+                          </svg>
+                        </span>
+
+                        {/* Shine effect */}
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-20 group-hover:animate-pulse bg-white"></div>
+                      </button>
+                    </div>
+                  )}
+                </>
               ) : (
                 <div className="bg-white rounded-lg shadow-md p-8 text-center">
                   <svg
