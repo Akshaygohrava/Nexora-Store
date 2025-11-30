@@ -1,6 +1,6 @@
 # 🛒 Nexora Store
 
-Welcome to **Nexora Store** – a modern, full-stack eCommerce experience crafted with design and performance in mind.  
+Welcome to **Nexora Store** – a modern, Full-Stack eCommerce experience crafted with design and performance in mind.  
 This project brings together the latest web technologies for a beautiful, secure, and interactive online shopping platform.
 
 ---
@@ -17,6 +17,10 @@ This project brings together the latest web technologies for a beautiful, secure
 - 📁 **Clean Architecture** — Modern development standards and best practices.
 
 ---
+Fixes While Building : 
+Fix: Rename About folder to lowercase for case-sensitive Vercel deployment , Solve an Critical Error !
+
+
 
 ## 👀 Live Demo
 
