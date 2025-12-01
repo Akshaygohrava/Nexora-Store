@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
@@ -9,11 +10,53 @@ import Navbar from '@/components/Navbar';
 import ProductCard from '@/components/ProductCard';
 
 export default function ProductDetail({ params }) {
-  const { id } = params;
-  const product = products.find(p => p.id === parseInt(id));
+  const router = useRouter();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [isAdded, setIsAdded] = useState(false);
+
+  useEffect(() => {
+    // Handle both sync and async params
+    const loadProduct = async () => {
+      try {
+        // Get params id - handle Promise case
+        let id = params?.id;
+        if (params && typeof params === 'object' && !('id' in params)) {
+          // params might be a promise in some cases
+          id = (await params)?.id;
+        }
+
+        if (id) {
+          const productId = parseInt(id);
+          const foundProduct = products.find(p => p.id === productId);
+          setProduct(foundProduct || null);
+        }
+      } catch (error) {
+        console.error('Error loading product:', error);
+        setProduct(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProduct();
+  }, [params]);
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <main className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            <p className="mt-4 text-gray-600">Loading product...</p>
+          </div>
+        </main>
+      </>
+    );
+  }
 
   if (!product) {
     return (
