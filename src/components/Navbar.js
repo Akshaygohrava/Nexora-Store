@@ -2,12 +2,17 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Navbar() {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const { getCartCount } = useCart();
+  const { user, logout } = useAuth();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -24,6 +29,12 @@ export default function Navbar() {
       document.body.style.overflow = 'unset';
     };
   }, [isMenuOpen]);
+
+  const handleLogout = () => {
+    logout();
+    setShowProfileMenu(false);
+    router.push('/');
+  };
 
   const menuItems = [
     { href: '/', label: 'Home', icon: '🏠' },
@@ -139,25 +150,95 @@ export default function Navbar() {
               )}
             </Link>
 
-            {/* User Account Icon */}
-            <Link
-              href="/account"
-              className="p-2 text-gray-700 hover:text-indigo-600 transition-colors"
-            >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+            {/* User Account Icon or Sign In */}
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setShowProfileMenu(!showProfileMenu)}
+                  className="p-2 text-gray-700 hover:text-indigo-600 transition-colors relative group"
+                >
+                  <svg
+                    className="h-6 w-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                  <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full"></span>
+                </button>
+
+                {/* Profile Dropdown Menu */}
+                {showProfileMenu && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl z-50 border border-gray-200 overflow-hidden">
+                    {/* User Info */}
+                    <div className="bg-linear-to-r from-indigo-600 to-indigo-700 text-white p-4">
+                      <p className="font-bold text-sm">{user.name}</p>
+                      <p className="text-xs text-indigo-100">{user.email}</p>
+                    </div>
+
+                    {/* Menu Items */}
+                    <Link
+                      href="/account"
+                      className="flex px-4 py-3 text-sm hover:bg-gray-50 transition-colors items-center gap-2"
+                      onClick={() => setShowProfileMenu(false)}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      Account Settings
+                    </Link>
+                    <Link
+                      href="/orders"
+                      className="flex px-4 py-3 text-sm hover:bg-gray-50 transition-colors items-center gap-2"
+                      onClick={() => setShowProfileMenu(false)}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                      </svg>
+                      My Orders
+                    </Link>
+                    <Link
+                      href="/wishlist"
+                      className="flex px-4 py-3 text-sm hover:bg-gray-50 transition-colors items-center gap-2"
+                      onClick={() => setShowProfileMenu(false)}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                      </svg>
+                      Wishlist
+                    </Link>
+
+                    {/* Divider */}
+                    <div className="border-t border-gray-200"></div>
+
+                    {/* Logout Button */}
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 font-medium"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                href="/signin"
+                className="px-4 py-2 text-sm font-semibold text-white bg-linear-to-r from-indigo-600 to-indigo-700 rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105 active:scale-95"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-            </Link>
+                Sign In
+              </Link>
+            )}
 
             {/* Mobile Menu Button - Animated */}
             <button
