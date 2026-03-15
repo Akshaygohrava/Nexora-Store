@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
@@ -8,7 +8,7 @@ import Navbar from '@/components/Navbar';
 
 export default function SignUp() {
   const router = useRouter();
-  const { signUp, signInWithGoogle } = useAuth();
+  const { signUp, signInWithGoogle, user } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -47,39 +47,41 @@ export default function SignUp() {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-
     try {
       const { name, email, password, confirmPassword, agreeTerms } = formData;
-
       if (!name || !email || !password || !confirmPassword) {
         setError('Please fill in all fields');
+        setIsLoading(false);
         return;
       }
-
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         setError('Please enter a valid email');
+        setIsLoading(false);
         return;
       }
-
       if (password.length < 6) {
         setError('Password must be at least 6 characters');
+        setIsLoading(false);
         return;
       }
-
       if (password !== confirmPassword) {
         setError('Passwords do not match');
+        setIsLoading(false);
         return;
       }
-
       if (!agreeTerms) {
         setError('You must agree to the terms and conditions');
+        setIsLoading(false);
         return;
       }
-
-      signUp(email, password, name);
-      router.push('/');
+      await signUp(email, password);
+      // Optionally update displayName after sign up
+      if (auth.currentUser && name) {
+        await auth.currentUser.updateProfile({ displayName: name });
+      }
+      router.push('/account');
     } catch (err) {
-      setError('Sign up failed. Please try again.');
+      setError(err.message || 'Sign up failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -88,14 +90,20 @@ export default function SignUp() {
   const handleGoogleSignUp = async () => {
     setIsLoading(true);
     try {
-      signInWithGoogle('user@gmail.com', 'Google User', 'https://via.placeholder.com/100');
-      router.push('/');
+      await signInWithGoogle();
+      router.push('/account');
     } catch (err) {
-      setError('Google sign up failed');
+      setError(err.message || 'Google sign up failed');
     } finally {
       setIsLoading(false);
     }
   };
+  // Redirect if already signed in
+  useEffect(() => {
+    if (user) {
+      router.push('/account');
+    }
+  }, [user, router]);
 
   const strengthColors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-green-500'];
   const strengthLabels = ['Weak', 'Fair', 'Good', 'Strong'];

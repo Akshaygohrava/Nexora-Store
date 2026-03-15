@@ -1,6 +1,8 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
+import { signIn, signUp, logout as firebaseLogout, onAuthChange, auth } from '@/lib/firebaseAuth';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 const AuthContext = createContext();
 
@@ -8,51 +10,47 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load user from localStorage on mount
+  // Listen for Firebase auth state changes
   useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (error) {
-        console.error('Error loading user:', error);
-        localStorage.removeItem('user');
+    const unsubscribe = onAuthChange((firebaseUser) => {
+      if (firebaseUser) {
+        setUser({
+          email: firebaseUser.email,
+          name: firebaseUser.displayName,
+          photoURL: firebaseUser.photoURL,
+          uid: firebaseUser.uid,
+        });
+      } else {
+        setUser(null);
       }
-    }
-    setIsLoading(false);
+      setIsLoading(false);
+    });
+    return () => unsubscribe();
   }, []);
 
-  const signIn = (email, password, name) => {
-    // Simulate sign in
-    const userData = { email, name, id: Date.now() };
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
-    return userData;
+  const handleSignIn = async (email, password) => {
+    await signIn(email, password);
+    // user state will be updated by onAuthChange
   };
 
-  const signUp = (email, password, name) => {
-    // Simulate sign up
-    const userData = { email, name, id: Date.now() };
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
-    return userData;
+  const handleSignUp = async (email, password) => {
+    await signUp(email, password);
+    // user state will be updated by onAuthChange
   };
 
-  const signInWithGoogle = (email, name, photoURL) => {
-    // Simulate Google sign in
-    const userData = { email, name, photoURL, id: Date.now() };
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
-    return userData;
+  const signInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+    // user state will be updated by onAuthChange
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
+  const logout = async () => {
+    await firebaseLogout();
+    // user state will be updated by onAuthChange
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, signIn, signUp, signInWithGoogle, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, signIn: handleSignIn, signUp: handleSignUp, signInWithGoogle, logout }}>
       {children}
     </AuthContext.Provider>
   );

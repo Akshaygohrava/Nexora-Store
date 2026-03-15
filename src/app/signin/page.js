@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
@@ -8,7 +8,7 @@ import Navbar from '@/components/Navbar';
 
 export default function SignIn() {
   const router = useRouter();
-  const { signIn, signInWithGoogle } = useAuth();
+  const { signIn, signInWithGoogle, user } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -20,27 +20,26 @@ export default function SignIn() {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-
     try {
       if (!email || !password) {
         setError('Please fill in all fields');
+        setIsLoading(false);
         return;
       }
-
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         setError('Please enter a valid email');
+        setIsLoading(false);
         return;
       }
-
       if (password.length < 6) {
         setError('Password must be at least 6 characters');
+        setIsLoading(false);
         return;
       }
-
-      signIn(email, password, email.split('@')[0]);
-      router.push('/');
+      await signIn(email, password);
+      router.push('/account');
     } catch (err) {
-      setError('Sign in failed. Please try again.');
+      setError(err.message || 'Sign in failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -49,15 +48,20 @@ export default function SignIn() {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
-      // Simulate Google sign in
-      signInWithGoogle('user@gmail.com', 'Google User', 'https://via.placeholder.com/100');
-      router.push('/');
+      await signInWithGoogle();
+      router.push('/account');
     } catch (err) {
-      setError('Google sign in failed');
+      setError(err.message || 'Google sign in failed');
     } finally {
       setIsLoading(false);
     }
   };
+  // Redirect if already signed in
+  useEffect(() => {
+    if (user) {
+      router.push('/account');
+    }
+  }, [user, router]);
 
   return (
     <>
