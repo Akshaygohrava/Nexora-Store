@@ -9,7 +9,7 @@ export default function Home() {
   // Hero Carousel Products
   const heroProducts = [
     {
-      title: "New Collection 2025",
+      title: "New Collection 2026",
       description: "Discover the latest trends in fashion and style",
       image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&h=600&fit=crop",
       link: "/products",
