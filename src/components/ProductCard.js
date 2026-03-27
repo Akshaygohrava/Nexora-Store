@@ -3,11 +3,14 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
 import { useState } from 'react';
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [isAdding, setIsAdding] = useState(false);
+  const [isWishLoading, setIsWishLoading] = useState(false);
 
   const handleAddToCart = (e) => {
     e.preventDefault();
@@ -15,6 +18,18 @@ export default function ProductCard({ product }) {
     setIsAdding(true);
     addToCart(product);
     setTimeout(() => setIsAdding(false), 500);
+  };
+
+  const handleWishlist = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsWishLoading(true);
+    if (isInWishlist(product.id)) {
+      await removeFromWishlist(product.id);
+    } else {
+      await addToWishlist(product);
+    }
+    setIsWishLoading(false);
   };
 
   return (
@@ -33,6 +48,21 @@ export default function ProductCard({ product }) {
               {product.badge}
             </span>
           )}
+          <button
+            onClick={handleWishlist}
+            className={`absolute top-2 right-2 z-10 p-2 rounded-full bg-white/80 hover:bg-pink-100 transition-colors ${isWishLoading ? 'opacity-60 pointer-events-none' : ''}`}
+            aria-label={isInWishlist(product.id) ? 'Remove from wishlist' : 'Add to wishlist'}
+          >
+            {isInWishlist(product.id) ? (
+              <svg xmlns="http://www.w3.org/2000/svg" fill="#ec4899" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#ec4899" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.54 0-2.878.792-3.687 2.008C11.566 4.542 10.228 3.75 8.688 3.75 6.099 3.75 4 5.765 4 8.25c0 7.22 8 11.25 8 11.25s8-4.03 8-11.25z" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#ec4899" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.54 0-2.878.792-3.687 2.008C11.566 4.542 10.228 3.75 8.688 3.75 6.099 3.75 4 5.765 4 8.25c0 7.22 8 11.25 8 11.25s8-4.03 8-11.25z" />
+              </svg>
+            )}
+          </button>
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
         </div>
         <div className="p-4 sm:p-6">

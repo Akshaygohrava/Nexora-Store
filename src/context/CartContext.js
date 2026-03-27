@@ -1,28 +1,58 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
+import { db } from '@/lib/firebase';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
+  const { user } = useAuth();
   const [cartItems, setCartItems] = useState([]);
 
-  // Load cart from localStorage on mount
+  // Load cart from Firestore or localStorage on mount/login
   useEffect(() => {
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      try {
-        setCartItems(JSON.parse(savedCart));
-      } catch (error) {
-        console.error('Error loading cart:', error);
+    const loadCart = async () => {
+      if (user) {
+        // Try to load from Firestore
+        const cartRef = doc(db, `users/${user.uid}/cart`, 'cart');
+        const cartSnap = await getDoc(cartRef);
+        if (cartSnap.exists()) {
+          setCartItems(cartSnap.data().items || []);
+        } else {
+          setCartItems([]);
+        }
+      } else {
+        // Guest: load from localStorage
+        const savedCart = localStorage.getItem('cart');
+        if (savedCart) {
+          try {
+            setCartItems(JSON.parse(savedCart));
+          } catch (error) {
+            setCartItems([]);
+          }
+        } else {
+          setCartItems([]);
+        }
       }
-    }
-  }, []);
+    };
+    loadCart();
+    // eslint-disable-next-line
+  }, [user]);
 
-  // Save cart to localStorage whenever it changes
+  // Save cart to Firestore or localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cartItems));
-  }, [cartItems]);
+    if (user) {
+      const saveCart = async () => {
+        const cartRef = doc(db, `users/${user.uid}/cart`, 'cart');
+        await setDoc(cartRef, { items: cartItems });
+      };
+      saveCart();
+    } else {
+      localStorage.setItem('cart', JSON.stringify(cartItems));
+    }
+  }, [cartItems, user]);
 
   const addToCart = (product) => {
     setCartItems((prevItems) => {
